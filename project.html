@@ -407,35 +407,152 @@
 </head>
 <body>
 <!-- ── NAVBAR ──────────────────────────────────── -->
-<header id="navbar">
-  <div class="nav-inner">
-    <a href="#" class="logo">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
-      WeavedNest
-    </a>
-    <nav>
-      <a href="#products">Shop</a>
-      <a href="#about">Our Craft</a>
-      <a href="#features">Why Us</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <button class="cart-btn" onclick="toggleCart()" aria-label="Cart">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        <span class="cart-count" id="cart-count" style="display:none">0</span>
-      </button>
-      <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
-        <svg id="menu-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
+</a>
+<nav>
+  <a href="#products">Shop</a>
+  <a href="#about">Our Craft</a>
+  <a href="#features">Why Us</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<div style="display:flex;align-items:center;gap:8px;">
+  <button class="cart-btn" onclick="toggleCart()" aria-label="Cart">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="9" cy="21" r="1"/>
+      <circle cx="20" cy="21" r="1"/>
+      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+    </svg>
+    <span class="cart-count" id="cart-count" style="display:none">0</span>
+  </button>
+
+  <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <svg id="menu-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+</div>
+
+</div>
+
+<div class="mobile-nav" id="mobile-nav">
+  <a href="#products" onclick="closeMobileMenu()">Shop</a>
+  <a href="#about" onclick="closeMobileMenu()">Our Craft</a>
+  <a href="#features" onclick="closeMobileMenu()">Why Us</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<!-- ⭐ FULLY UPGRADED FLOATING CONTACT WIDGET ⭐ -->
+<div id="contact-widget" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  font-size: 14px;
+  z-index: 9999;
+  width: 200px;
+  cursor: grab;
+  transition: all 0.25s ease;
+">
+
+  <!-- Header / Drag Handle -->
+  <div id="contact-header" style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    cursor:grab;
+  ">
+    <strong>Contact</strong>
+    <button id="toggle-contact" style="
+      background:none;
+      border:none;
+      font-size:18px;
+      cursor:pointer;
+    ">−</button>
+  </div>
+
+  <!-- Content -->
+  <div id="contact-content" style="margin-top:12px;">
+    <p style="margin:0 0 10px 0;"><strong>0790075832</strong></p>
+
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <a href="tel:0790075832" style="text-decoration:none; color:#000;">📞 Call</a>
+      <a href="https://wa.me/254790075832" target="_blank" style="text-decoration:none; color:#000;">💬 WhatsApp</a>
+      <a href="sms:0790075832" style="text-decoration:none; color:#000;">✉️ SMS</a>
     </div>
   </div>
-  <div class="mobile-nav" id="mobile-nav">
-    <a href="#products" onclick="closeMobileMenu()">Shop</a>
-    <a href="#about" onclick="closeMobileMenu()">Our Craft</a>
-    <a href="#features" onclick="closeMobileMenu()">Why Us</a>
-    <a href="#contact" onclick="closeMobileMenu()">Contact</a>
-  </div>
-</header>
+</div>
+
+<!-- ⭐ DRAG + COLLAPSE + TOUCH SUPPORT SCRIPT ⭐ -->
+<script>
+  const widget = document.getElementById("contact-widget");
+  const header = document.getElementById("contact-header");
+  const toggleBtn = document.getElementById("toggle-contact");
+  const content = document.getElementById("contact-content");
+
+  let isDown = false, offsetX = 0, offsetY = 0;
+
+  // Desktop dragging
+  header.addEventListener("mousedown", (e) => {
+    isDown = true;
+    offsetX = widget.offsetLeft - e.clientX;
+    offsetY = widget.offsetTop - e.clientY;
+    widget.style.cursor = "grabbing";
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDown = false;
+    widget.style.cursor = "grab";
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    widget.style.left = e.clientX + offsetX + "px";
+    widget.style.top = e.clientY + offsetY + "px";
+    widget.style.bottom = "auto";
+    widget.style.right = "auto";
+  });
+
+  // Mobile touch dragging
+  header.addEventListener("touchstart", (e) => {
+    isDown = true;
+    const touch = e.touches[0];
+    offsetX = widget.offsetLeft - touch.clientX;
+    offsetY = widget.offsetTop - touch.clientY;
+  });
+
+  document.addEventListener("touchend", () => {
+    isDown = false;
+  });
+
+  document.addEventListener("touchmove", (e) => {
+    if (!isDown) return;
+    const touch = e.touches[0];
+    widget.style.left = touch.clientX + offsetX + "px";
+    widget.style.top = touch.clientY + offsetY + "px";
+    widget.style.bottom = "auto";
+    widget.style.right = "auto";
+  });
+
+  // Collapse / Expand
+  toggleBtn.addEventListener("click", () => {
+    if (content.style.display === "none") {
+      content.style.display = "block";
+      toggleBtn.textContent = "−";
+      widget.style.width = "200px";
+      widget.style.padding = "15px";
+    } else {
+      content.style.display = "none";
+      toggleBtn.textContent = "+";
+      widget.style.width = "60px";
+      widget.style.padding = "10px";
+    }
+  });
+</script>
 <!-- ── HERO ────────────────────────────────────── -->
 <section id="hero">
   <img class="hero-bg" src="https://tse1.mm.bing.net/th/id/OIP.eAKmgSr_HH3GwzMvlkydmwHaEK?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Beautiful handwoven baskets" />
